@@ -1,6 +1,12 @@
 import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
-import { Container, Table, Button, Icon, Input } from 'semantic-ui-react';
+import { 
+    Container, 
+    Table, 
+    Button, 
+    Icon, 
+    Input
+} from 'semantic-ui-react';
 
 const numeral = require('numeral');
 function formatNumber(value, format = '0,0') {
@@ -16,7 +22,7 @@ class StockComponent extends React.Component {
                     id: 1,
                     num: 1,
                     code: 'ANTM',
-                    lot: 10,
+                    lot: 1000,
                     currValue: 1000000,
                     buyPrice: 1000,
                     buyValue: 1000000,
@@ -92,78 +98,75 @@ class StockRow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            stock: {
-                id: 0,
-                num: 1,
-                code: 'xxxx',
-                lot: 0,
-                currValue: 0,
-                buyPrice: 0,
-                buyValue: 0,
-                currPrice: 0,
-                pts: 0,
-                pct: 0
-            },
+            id: 0,
+            code: 'xxxx',
+            lot: 0,
+            buyPrice: 0,
             editMode: false
         }
     }
 
-    componentDidMount() {
-        this.setState({
-            stock: this.props.stock
-        });
-    }
-
     handleEditMode = () => {
-        this.setState({
-            editMode: !this.state.editMode
-        });
-    }
+        const { stock } = this.props;
 
-    handleOnChange = (event) => {
-        // clone the stock
-        let editedStock = {...this.state.stock};
-        let value = event.target.value;
-        
-        // set the event.target.name to event.target.value
-        if (event.target.filterType === "number") { // for type number
-            let rgx = new RegExp('^\\d+$');
-            if (rgx.test(value)) {
-                value = parseInt(value);
-                editedStock[event.target.name] = value;
-                this.setState({
-                    stock: editedStock
-                });
-            }
-        } else { // anything else
-            editedStock[event.target.name] = value;
-            this.setState({
-                stock: editedStock
-            });
-        }
+        this.setState({
+            editMode: !this.state.editMode,
+            id: stock.id,
+            code: stock.code,
+            lot: stock.lot,
+            buyPrice: stock.buyPrice
+        });
     }
 
     handleSave = () => {
-        this.props.OnSave(this.state.stock);
+        let stock = {...this.props.stock};
+        stock.code = this.state.code;
+        stock.lot = this.state.lot;
+        stock.buyPrice = this.state.buyPrice;
+
+        this.props.OnSave(stock);
         this.setState({
             editMode: !this.state.editMode
-        })
+        });
     }
 
-    renderSaveButton() {
-        if (this.state.editMode) {
-            return (
-                <Button onClick={this.handleSave}>
-                    <Icon fitted name='check' />
-                </Button>
-            )
-        } else {
-            return '';
-        }
+    onChangeHandler = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
     }
 
-    render() {
-        const { stock, editMode } = this.state;
+    renderEdited() {
+        return (
+            <Table.Row>
+                <Table.Cell></Table.Cell>
+                <Table.Cell>
+                    <Input label='Code' type='text' name='code' value={this.state.code} onChange={this.onChangeHandler} />
+                </Table.Cell>
+                <Table.Cell>
+                    <Input label='Lot' type='number' name='lot' value={this.state.lot} onChange={this.onChangeHandler} />
+                </Table.Cell>
+                <Table.Cell>
+                    <Input label='Buy Price' type='number' name='buyPrice' value={this.state.buyPrice} onChange={this.onChangeHandler} />
+                </Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell>
+                    <Button basic color='green' onClick={this.handleSave} animated>
+                        <Button.Content visible>
+                            <Icon fitted name='check' />
+                        </Button.Content>
+                        <Button.Content hidden>
+                            Save
+                        </Button.Content>
+                    </Button>
+                </Table.Cell>
+            </Table.Row>
+        );
+    }
+
+    renderRow() {
+        const { editMode } = this.state;
+        const { stock } = this.props;
 
         return (
             <Table.Row>
@@ -174,11 +177,7 @@ class StockRow extends React.Component {
                     <Table striped>
                         <Table.Body>
                             <Table.Row>
-                                <Table.Cell>
-                                    <Input filterType="number" name="lot" disabled={!this.state.editMode} 
-                                    onChange={this.handleOnChange}
-                                    value={stock.lot} />
-                                </Table.Cell>
+                                <Table.Cell>{formatNumber(stock.lot)}</Table.Cell>
                             </Table.Row>
                             <Table.Row>
                                 <Table.Cell>{formatNumber(stock.currValue)}</Table.Cell>
@@ -218,12 +217,25 @@ class StockRow extends React.Component {
                 </Table.Cell>
 
                 <Table.Cell>
-                    <Button onClick={this.handleEditMode} primary={!editMode} negative={editMode}>
-                        <Icon fitted name='pencil' />
-                    </Button><br /><br />
-                    {this.renderSaveButton()}
+                    <Button animated onClick={this.handleEditMode} primary={!editMode} negative={editMode}>
+                        <Button.Content visible>
+                            <Icon fitted name={editMode ? 'cancel' : 'pencil'} />
+                        </Button.Content>
+                        <Button.Content hidden>
+                            {editMode ? 'Cancel' : 'Edit'}
+                        </Button.Content>
+                    </Button>
                 </Table.Cell>
             </Table.Row>
+        );
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                {this.renderRow()}
+                {this.state.editMode ? this.renderEdited() : null}
+            </React.Fragment>
         );
     }
 }
