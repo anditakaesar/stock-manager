@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import 'semantic-ui-css/semantic.min.css';
 import { Menu, Container } from 'semantic-ui-react';
 import {
     BrowserRouter as Router,
@@ -7,8 +8,8 @@ import {
     Route,
     Link
 } from "react-router-dom";
-import StockComponent from './Stock/StockContainer';
-import LoginComponent from './Login/LoginComponent';
+import StockComponent from './stock/StockContainer';
+import LoginComponent from './login/LoginComponent';
 
 class App extends React.Component {
     constructor(props) {
