@@ -1,50 +1,50 @@
 import React from 'react';
 
 import { 
-    Container, 
-    Table, 
-    Button, 
-    Icon, 
-    Input
+  Container, 
+  Table, 
+  Button, 
+  Icon, 
+  Input
 } from 'semantic-ui-react';
 
 const numeral = require('numeral');
 function formatNumber(value, format = '0,0') {
-    return numeral(value).format(format);
+  return numeral(value).format(format);
 }
 
 class StockComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            stocks: [
-                {
-                    id: 1,
-                    num: 1,
-                    code: 'ANTM',
-                    lot: 1000,
-                    currValue: 1000000,
-                    buyPrice: 1000,
-                    buyValue: 1000000,
-                    currPrice: 1000,
-                    pts: 0,
-                    pct: 1.4444
-                },
-                {
-                    id: 2,
-                    num: 2,
-                    code: 'PTBA',
-                    lot: 10,
-                    currValue: 1000000,
-                    buyPrice: 1000,
-                    buyValue: 1000000,
-                    currPrice: 1000,
-                    pts: 0,
-                    pct: 0
-                }
-            ]
-        }
-    }
+  constructor(props) {
+      super(props);
+      this.state = {
+          stocks: [
+              {
+                  id: 1,
+                  num: 1,
+                  code: 'ANTM',
+                  lot: 1000,
+                  currValue: 1000000,
+                  buyPrice: 1000,
+                  buyValue: 1000000,
+                  currPrice: 1000,
+                  pts: 0,
+                  pct: 1.4444
+              },
+              {
+                  id: 2,
+                  num: 2,
+                  code: 'PTBA',
+                  lot: 10,
+                  currValue: 1000000,
+                  buyPrice: 1000,
+                  buyValue: 1000000,
+                  currPrice: 1000,
+                  pts: 0,
+                  pct: 0
+              }
+          ]
+      }
+  }
 
     handleStockEdit = (newStock) => {
         // check the id
